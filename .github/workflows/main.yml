@@ -52,5 +52,5 @@ jobs:
       env:
         CGO_ENABLED: 1
       run: |
-        go test ./{api,converters,function,worker,pluginloader}
-        go test -race ./{api,converters,function,worker,pluginloader}
+        go test ./api ./converters ./function ./worker ./pluginloader
+        go test -race ./api ./converters ./function ./worker ./pluginloader
