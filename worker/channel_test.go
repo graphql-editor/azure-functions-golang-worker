@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
@@ -243,13 +244,14 @@ func TestFunctionEnvironmentReloadRequest(t *testing.T) {
 	ch := worker.NewChannel()
 	ch.SetEventStream(&mockSender)
 
-	tmpDir := os.TempDir()
+	nwd := filepath.Join(pwd, "testdir")
+	os.Mkdir(nwd, 0777)
 
 	ch.FunctionEnvironmentReloadRequest("mockRequestID", &rpc.FunctionEnvironmentReloadRequest{
 		EnvironmentVariables: map[string]string{
 			"VAR": "VALUE",
 		},
-		FunctionAppDirectory: tmpDir,
+		FunctionAppDirectory: nwd,
 	})
 	mockSender.AssertCalled(t, "Send", &rpc.StreamingMessage{
 		RequestId: "mockRequestID",
@@ -262,6 +264,8 @@ func TestFunctionEnvironmentReloadRequest(t *testing.T) {
 		},
 	})
 	assert.Equal(t, os.Getenv("VAR"), "VALUE")
-	nwd, _ := os.Getwd()
-	assert.Equal(t, tmpDir, nwd)
+	actualwd, _ := os.Getwd()
+	assert.Equal(t, nwd, actualwd)
+	os.Chdir(pwd)
+	os.Remove(nwd)
 }
