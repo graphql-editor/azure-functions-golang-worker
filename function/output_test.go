@@ -7,6 +7,7 @@ import (
 
 	"github.com/graphql-editor/azure-functions-golang-worker/api"
 	functionpkg "github.com/graphql-editor/azure-functions-golang-worker/function"
+	"github.com/graphql-editor/azure-functions-golang-worker/mocks"
 	"github.com/graphql-editor/azure-functions-golang-worker/rpc"
 	"github.com/stretchr/testify/assert"
 )
@@ -272,7 +273,7 @@ func TestOutputMarshal(t *testing.T) {
 		object := objectType.New()
 		assert.NoError(t, object.Call(
 			context.WithValue(ctx, expectedKey, tt.output),
-			&loggerMock{},
+			&mocks.Logger{},
 			inputRPCHttpData,
 			nil,
 			functionpkg.BindingData{},

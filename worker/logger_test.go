@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/graphql-editor/azure-functions-golang-worker/mocks"
 	"github.com/graphql-editor/azure-functions-golang-worker/rpc"
 	"github.com/graphql-editor/azure-functions-golang-worker/worker"
 	"github.com/stretchr/testify/assert"
@@ -11,7 +12,7 @@ import (
 )
 
 func TestLogger(t *testing.T) {
-	var mockSender MockSender
+	var mockSender mocks.Sender
 	mockSender.On("Send", mock.Anything)
 
 	logger := worker.Logger{

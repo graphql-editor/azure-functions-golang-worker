@@ -9,9 +9,9 @@ import (
 
 	"github.com/graphql-editor/azure-functions-golang-worker/api"
 	functionpkg "github.com/graphql-editor/azure-functions-golang-worker/function"
+	"github.com/graphql-editor/azure-functions-golang-worker/mocks"
 	"github.com/graphql-editor/azure-functions-golang-worker/rpc"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 var (
@@ -60,64 +60,6 @@ var (
 		"RawBody": "someBody"
 	}`
 )
-
-type loggerMock struct {
-	mock.Mock
-}
-
-func (m *loggerMock) Trace(msg string) {
-	m.Called(msg)
-}
-
-func (m *loggerMock) Tracef(msg string, args ...interface{}) {
-	args = append([]interface{}{msg}, args...)
-	m.Called(args...)
-}
-
-func (m *loggerMock) Debug(msg string) {
-	m.Called(msg)
-}
-
-func (m *loggerMock) Debugf(msg string, args ...interface{}) {
-	args = append([]interface{}{msg}, args...)
-	m.Called(args...)
-}
-
-func (m *loggerMock) Info(msg string) {
-	m.Called(msg)
-}
-
-func (m *loggerMock) Infof(msg string, args ...interface{}) {
-	args = append([]interface{}{msg}, args...)
-	m.Called(args...)
-}
-
-func (m *loggerMock) Warn(msg string) {
-	m.Called(msg)
-}
-
-func (m *loggerMock) Warnf(msg string, args ...interface{}) {
-	args = append([]interface{}{msg}, args...)
-	m.Called(args...)
-}
-
-func (m *loggerMock) Error(msg string) {
-	m.Called(msg)
-}
-
-func (m *loggerMock) Errorf(msg string, args ...interface{}) {
-	args = append([]interface{}{msg}, args...)
-	m.Called(args...)
-}
-
-func (m *loggerMock) Fatal(msg string) {
-	m.Called(msg)
-}
-
-func (m *loggerMock) Fatalf(msg string, args ...interface{}) {
-	args = append([]interface{}{msg}, args...)
-	m.Called(args...)
-}
 
 type FullBindingStruct struct {
 	HTTPTrigger *api.Request
@@ -171,7 +113,7 @@ func TestFunctionStructWithoutReturn(t *testing.T) {
 	object := objectType.New()
 	assert.NoError(t, object.Call(
 		context.Background(),
-		&loggerMock{},
+		&mocks.Logger{},
 		inputRPCHttpData,
 		nil,
 		originalBindingData,
@@ -262,7 +204,7 @@ func TestFunctionStructWithReturn(t *testing.T) {
 	object := objectType.New()
 	assert.NoError(t, object.Call(
 		context.Background(),
-		&loggerMock{},
+		&mocks.Logger{},
 		inputRPCHttpData,
 		nil,
 		originalBindingData,
@@ -354,7 +296,7 @@ func TestFunctionStructWithTagsWithoutReturn(t *testing.T) {
 	object := objectType.New()
 	assert.NoError(t, object.Call(
 		context.Background(),
-		&loggerMock{},
+		&mocks.Logger{},
 		inputRPCHttpData,
 		nil,
 		originalBindingData,
@@ -445,7 +387,7 @@ func TestFunctionStructWithTagsWithReturn(t *testing.T) {
 	object := objectType.New()
 	assert.NoError(t, object.Call(
 		context.Background(),
-		&loggerMock{},
+		&mocks.Logger{},
 		inputRPCHttpData,
 		nil,
 		originalBindingData,
@@ -532,7 +474,7 @@ func TestFunctionMapWithoutReturn(t *testing.T) {
 	object := objectType.New()
 	assert.NoError(t, object.Call(
 		context.Background(),
-		&loggerMock{},
+		&mocks.Logger{},
 		inputRPCHttpData,
 		nil,
 		originalBindingData,
@@ -631,7 +573,7 @@ func TestFunctionMapWithReturn(t *testing.T) {
 	object := objectType.New()
 	assert.NoError(t, object.Call(
 		context.Background(),
-		&loggerMock{},
+		&mocks.Logger{},
 		inputRPCHttpData,
 		nil,
 		originalBindingData,
@@ -765,7 +707,7 @@ func TestOptionalBindings(t *testing.T) {
 	object := objectType.New()
 	assert.NoError(t, object.Call(
 		context.Background(),
-		&loggerMock{},
+		&mocks.Logger{},
 		inputRPCHttpData,
 		nil,
 		originalBindingData,

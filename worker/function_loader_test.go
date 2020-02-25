@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/graphql-editor/azure-functions-golang-worker/api"
+	"github.com/graphql-editor/azure-functions-golang-worker/mocks"
 	"github.com/graphql-editor/azure-functions-golang-worker/rpc"
 	"github.com/graphql-editor/azure-functions-golang-worker/worker"
 	"github.com/stretchr/testify/assert"
@@ -16,20 +17,6 @@ import (
 type MockFunction map[string]interface{}
 
 func (m MockFunction) Run(ctx context.Context, logger api.Logger) {}
-
-type MockTypeLoader struct {
-	mock.Mock
-}
-
-func (m *MockTypeLoader) GetFunctionType(info worker.FunctionInfo, logger api.Logger) (reflect.Type, error) {
-	called := m.Called(info, logger)
-	v := called.Get(0)
-	err := called.Error(1)
-	if v == nil {
-		return nil, err
-	}
-	return v.(reflect.Type), err
-}
 
 func TestFunctionLoader(t *testing.T) {
 	mockFunctionType := reflect.TypeOf((*MockFunction)(nil)).Elem()
@@ -52,7 +39,7 @@ func TestFunctionLoader(t *testing.T) {
 			},
 		},
 	}
-	var mockLoader MockTypeLoader
+	var mockLoader mocks.TypeLoader
 	mockLoader.On("GetFunctionType", fi, mock.Anything).Return(mockFunctionType, nil)
 	loader := worker.Loader{
 		TypeLoader:      &mockLoader,
@@ -82,7 +69,7 @@ func TestFunctionLoader(t *testing.T) {
 }
 
 func TestErrorOnBadEntrypoint(t *testing.T) {
-	var mockLoader MockTypeLoader
+	var mockLoader mocks.TypeLoader
 	loader := worker.Loader{
 		TypeLoader:      &mockLoader,
 		LoadedFunctions: make(map[string]worker.Function),
@@ -93,7 +80,7 @@ func TestErrorOnBadEntrypoint(t *testing.T) {
 }
 
 func TestErrorOnLoaderError(t *testing.T) {
-	var mockLoader MockTypeLoader
+	var mockLoader mocks.TypeLoader
 	mockLoader.On("GetFunctionType", worker.FunctionInfo{
 		EntryPoint:     "Function",
 		InputBindings:  worker.Bindings{},

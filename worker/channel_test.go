@@ -10,20 +10,13 @@ import (
 	"testing"
 
 	"github.com/graphql-editor/azure-functions-golang-worker/api"
+	"github.com/graphql-editor/azure-functions-golang-worker/mocks"
 	"github.com/graphql-editor/azure-functions-golang-worker/rpc"
 	"github.com/graphql-editor/azure-functions-golang-worker/worker"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
-
-type MockSender struct {
-	mock.Mock
-}
-
-func (m *MockSender) Send(msg *rpc.StreamingMessage) {
-	m.Called(msg)
-}
 
 type MockFuncForChannel map[string]interface{}
 
@@ -37,9 +30,9 @@ func (m MockFuncForChannel) Run(ctx context.Context, logger api.Logger) {
 
 func TestDefaultChannel(t *testing.T) {
 	mockFunctionType := reflect.TypeOf((*MockFuncForChannel)(nil)).Elem()
-	var mockLoader MockTypeLoader
+	var mockLoader mocks.TypeLoader
 	mockLoader.On("GetFunctionType", mock.Anything, mock.Anything).Return(mockFunctionType, nil)
-	var mockSender MockSender
+	var mockSender mocks.Sender
 	mockSender.On("Send", mock.Anything)
 	ch := worker.NewChannel()
 	ch.SetEventStream(&mockSender)
@@ -172,9 +165,9 @@ func TestDefaultChannel(t *testing.T) {
 }
 
 func TestLoadingError(t *testing.T) {
-	var mockLoader MockTypeLoader
+	var mockLoader mocks.TypeLoader
 	mockLoader.On("GetFunctionType", mock.Anything, mock.Anything).Return(nil, errors.WithStack(errors.New("some error")))
-	var mockSender MockSender
+	var mockSender mocks.Sender
 	mockSender.On("Send", mock.Anything)
 	ch := worker.NewChannel()
 	ch.SetEventStream(&mockSender)
@@ -238,7 +231,7 @@ func TestFunctionEnvironmentReloadRequest(t *testing.T) {
 		}
 		os.Chdir(pwd)
 	}()
-	var mockSender MockSender
+	var mockSender mocks.Sender
 	mockSender.On("Send", mock.Anything)
 
 	ch := worker.NewChannel()
