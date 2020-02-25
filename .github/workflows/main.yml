@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - master
-name: Stucco build
+name: Azure Functions GoLang Worker build
 env:
   CGO_ENABLED: 0
 jobs:
@@ -46,9 +46,7 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
-    - name: build all
-      run: go build ./...
-    - name: build stucco
+    - name: build azure-functions-golang-worker
       run: go build worker.go
     - name: test
       env:
