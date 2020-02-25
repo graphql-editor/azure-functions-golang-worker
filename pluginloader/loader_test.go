@@ -15,6 +15,6 @@ func TestPluginLoader(t *testing.T) {
 		EntryPoint: "Function",
 	}, nil)
 	assert.NoError(t, err)
-	assert.Equal(t, "main.HttpTrigger", rt.String())
+	assert.Equal(t, "main.HTTPTrigger", rt.String())
 	assert.NoError(t, l.Close())
 }
