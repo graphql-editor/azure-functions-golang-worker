@@ -21,13 +21,13 @@ type HTTPTrigger struct {
 }
 
 // Run implements function behaviour
-func (h *HttpTrigger) Run(ctx context.Context, logger api.Logger) {
+func (h *HTTPTrigger) Run(ctx context.Context, logger api.Logger) {
 	logger.Info(fmt.Sprintf("called with %v", h.Request))
 	h.Response.Body = []byte("ok")
 }
 
 // Function exports function entry point
-var Function HttpTrigger
+var Function HTTPTrigger
 ```
 
 # Getting started
