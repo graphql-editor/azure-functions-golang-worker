@@ -43,7 +43,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-go-
     - name: build azure-functions-golang-worker
-      run: go build worker.go
+      run: go build cmd/worker/worker.go
     - name: test
       env:
         CGO_ENABLED: 1
