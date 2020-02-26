@@ -43,7 +43,7 @@ func newGoBuild() (gobuild gobuild, err error) {
 		if err != nil {
 			return
 		}
-		gobuild.GOCACHE = cacheDir
+		gobuild.GOCACHE = filepath.Join(cacheDir, "function-go-build")
 	}
 	return
 }

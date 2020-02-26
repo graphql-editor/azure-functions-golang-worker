@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/Dennor/gbtb v0.0.0-20191115154947-f9688184df1c
 	github.com/blang/semver v3.5.1+incompatible // indirect
+	github.com/containous/yaegi v0.7.6
 	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8 // indirect
 	github.com/golang/protobuf v1.3.2
 	github.com/graphql-editor/stucco v0.3.0 // indirect

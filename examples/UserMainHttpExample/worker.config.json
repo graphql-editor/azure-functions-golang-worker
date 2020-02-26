@@ -3,6 +3,6 @@
         "language":"golang",
         "extensions":[".go"],
         "defaultExecutablePath":"go",
-        "arguments": ["run", "github.com/graphql-editor/azure-functions-golang-worker/cmd/worker"]
+        "arguments": ["run", "./worker.go"]
     }
 }
