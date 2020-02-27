@@ -94,24 +94,29 @@ type Loader struct {
 
 // GetFunctionType returns reflection of function type from go plugin
 func (l *Loader) GetFunctionType(fi worker.FunctionInfo, logger api.Logger) (reflect.Type, error) {
-	gobuild, err := newGoBuild()
-	if err != nil {
-		return nil, err
-	}
-	fpath, err := gobuild.tmpdir()
-	if err != nil {
-		return nil, err
-	}
-	l.lock.Lock()
-	l.binaries = append(l.binaries, fpath)
-	l.lock.Unlock()
-	fpath = filepath.Join(fpath, "function")
-	path := "./"
-	if fi.ScriptFile != "" {
-		path = fi.ScriptFile
-	}
-	if err := gobuild.build(logger, path, fpath); err != nil {
-		return nil, errors.Wrap(err, "function build failed")
+	var fpath string
+	if prebuilt := os.Getenv("AZURE_GOLANG_WORKER_PREBUILT_" + fi.Name); prebuilt != "" {
+		fpath = prebuilt
+	} else {
+		gobuild, err := newGoBuild()
+		if err != nil {
+			return nil, err
+		}
+		fpath, err = gobuild.tmpdir()
+		if err != nil {
+			return nil, err
+		}
+		l.lock.Lock()
+		l.binaries = append(l.binaries, fpath)
+		l.lock.Unlock()
+		fpath = filepath.Join(fpath, "function")
+		path := "./"
+		if fi.ScriptFile != "" {
+			path = fi.ScriptFile
+		}
+		if err := gobuild.build(logger, path, fpath); err != nil {
+			return nil, errors.Wrap(err, "function build failed")
+		}
 	}
 	plug, err := plugin.Open(fpath)
 	if err != nil {
